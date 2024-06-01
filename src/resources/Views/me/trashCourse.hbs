@@ -1,8 +1,8 @@
 <div class="mt-4">
-   <div>
-     <h3>Khóa Học Của Tôi</h3>
-     <a href="/me/trash/courses">Thung rac</a>
-   </div>
+    <div>
+        <a href="/me/store/courses">Quay Lai</a>
+        <h3>Khóa Học Đã Xóa</h3>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -21,16 +21,15 @@
                 <td>{{this.description}}</td>
                 <td>{{this.createdAt}}</td>
                 <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-dark">Edit</a>
-                    <a href="" class="btn btn-dark" data-id={{this._id}} data-toggle="modal"
-                        data-target="#DeleteCourse">Delete</a>
+                    <a href="" class="btn btn-dark btnRetore" data-id="{{this._id}}">Khôi phục</a>
+                    <a href="" class="btn btn-dark" data-id="{{this._id}}" data-toggle="modal" data-target="#DeleteCourse">Xóa Vĩnh Viễn</a>
                 </td>
             </tr>
             {{else}}
             <tr>
                 <td colspan="5" class="text-center">
-                    Ban Chua Co Hoc Nao
-                    <a href="/courses/create">Them Khoa Hoc Tai Day</a>
+                    Bạn chưa có khóa học nào
+                    <a href="/me/store/courses">danh sách khóa học</a>
                 </td>
             </tr>
             {{/each}}
@@ -38,9 +37,7 @@
     </table>
 </div>
 
-
-{{!-- from delete --}}
-
+{{!-- Form Xóa --}}
 <div class="modal" tabindex="-1" role="dialog" id="DeleteCourse">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -61,27 +58,36 @@
     </div>
 </div>
 
-{{!-- form hidden --}}
-<form  method="post" name="delelte-course-form" style="display: none"></form>
+{{!-- Form Ẩn --}}
+<form method="post" name="delete-course-form" style="display: none"></form>
+<form method="post" name="restore-course-form" style="display: none"></form>
 
 <script>
-
-    //khi dialog duoc show
     document.addEventListener('DOMContentLoaded', function () {
-        var ID
-        var deleteForm = document.forms['delelte-course-form']
-        var btnCourse = document.getElementById('CourseID')
+        var ID;
+        var deleteForm = document.forms['delete-course-form'];
+        var restoreForm = document.forms['restore-course-form'];
+        var btnCourse = document.getElementById('CourseID');
+        var btnRestore = document.querySelectorAll('.btnRetore');
 
         $('#DeleteCourse').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget)
-            ID = button.data('id')
-            console.log(ID)
-        })
+            var button = $(event.relatedTarget);
+            ID = button.data('id');
+            console.log(ID);
+        });
         
-        btnCourse.onclick = () => {
-            deleteForm.action = '/courses/' + ID +'?_method=DELETE';
-            deleteForm.submit() 
-        }
+        btnCourse.onclick = function () {
+            deleteForm.action = '/courses/' + ID + '/forever?_method=DELETE';
+            deleteForm.submit();
+        };
 
-    })
+        btnRestore.forEach(function(button) {
+            button.onclick = function(e) {
+                e.preventDefault();
+                var restoreId = button.getAttribute('data-id');
+                restoreForm.action = '/courses/' + restoreId + '/restore?_method=PATCH';
+                restoreForm.submit();
+            };
+        });
+    });
 </script>
