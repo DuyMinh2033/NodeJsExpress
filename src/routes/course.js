@@ -6,6 +6,8 @@ const courseController = require('../app/controller/CourseController');
 router.get('/create',courseController.create)
 router.post('/store',courseController.store)
 
+// submit action
+router.post('/handle-submit-action',courseController.handleSubmitAction)
 // edit
 router.get('/:id/edit',courseController.edit)
 router.put('/:id',courseController.update)

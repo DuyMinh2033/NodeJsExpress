@@ -1,21 +1,45 @@
-<div class="mt-4">
-   <div>
-     <h3>Khóa Học Của Tôi</h3>
-     <a href="/me/trash/courses">Thung rac</a>
-   </div>
+<form name="container-submit" class="mt-4" method="post" action="/courses/handle-submit-action">
+    <div>
+        <h3>Khóa Học Của Tôi</h3>
+        {{#if coutDelete}}
+        <a href="/me/trash/courses">Thung rac {{coutDelete}}</a>
+        {{/if}}
+
+
+        <div class="mt-4 ml-4">
+            <div class="form-check">
+                <input class="form-check-input position-static" type="checkbox" id="checkbox-all" value="option1"
+                    aria-label="...">
+                <label for="checkbox-all">Chọn Tất Cả</label>
+            </div>
+        </div>
+        <select class="form-control form-control-sm ml-4 mt-1 checkbox-select-app-options" style="width:200px;" name="action">
+            <option value="" required >-- Hành Động --</option>
+            <option value="delete">Xóa</option>
+        </select>
+        <button class="btn btn-primary btn-sm ml-4 mt-1 checkbox-all-submit disabled" >Thực Hiện</button>
+    </div>
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">#</th>
+                <th colspan="1"></th>
+                <th scope="col">checkbox</th>
                 <th scope="col">Tên khóa học</th>
                 <th scope="col">Trình độ</th>
-                <th scope="col">Thời gian đào tạo</th>
+                <th scope="col">Chon</th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
             {{#each courses}}
             <tr>
+                <td>
+                    <div class="ml-4">
+                        <div class="form-check">
+                            <input class="form-check-input position-static checkbox-course" type="checkbox"
+                                id={{this._id}} name="courseIds[]" value="{{this._id}}" aria-label="...">
+                        </div>
+                </td>
                 <th scope="row">{{sum @index 1 }}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.description}}</td>
@@ -36,7 +60,7 @@
             {{/each}}
         </tbody>
     </table>
-</div>
+</form>
 
 
 {{!-- from delete --}}
@@ -62,10 +86,10 @@
 </div>
 
 {{!-- form hidden --}}
-<form  method="post" name="delelte-course-form" style="display: none"></form>
+<form method="post" name="delelte-course-form" style="display: none"></form>
 
 <script>
-
+    
     //khi dialog duoc show
     document.addEventListener('DOMContentLoaded', function () {
         var ID
@@ -77,11 +101,69 @@
             ID = button.data('id')
             console.log(ID)
         })
-        
+
         btnCourse.onclick = () => {
-            deleteForm.action = '/courses/' + ID +'?_method=DELETE';
-            deleteForm.submit() 
+            deleteForm.action = '/courses/' + ID + '?_method=DELETE';
+            deleteForm.submit()
         }
 
+        //checkbox-all click 
+        
+        var checkboxAll = document.getElementById('checkbox-all')
+        var CourseElements = document.querySelectorAll('.checkbox-course')
+        var checkBoxSubmit = document.querySelectorAll('.checkbox-all-submit')
+        var containerForm  = document.forms['container-submit']
+        var actionSelect = document.querySelector('.checkbox-select-app-options');
+
+        window.addEventListener('pageshow', function () {
+        // để option về mặc định
+        actionSelect.selectedIndex = 0
+        // để các checkbox về mặc định
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);});
+
+        checkboxAll.onchange = () => {
+            var isChecked = checkboxAll.checked;
+            CourseElements.forEach(function (courseElement) {
+                courseElement.checked = isChecked;
+                renderCheckedAllBtn()
+            });
+        }
+        CourseElements.forEach(function (courseElement) {
+            courseElement.onchange = function () {
+                var allChecked = Array.from(CourseElements).every(function (element) {
+                    return element.checked;
+                });
+                checkboxAll.checked = allChecked;
+                renderCheckedAllBtn()
+            };
+        });
+        
+        checkBoxSubmit.forEach(function (element) {
+        element.onclick = function (e) {
+            // Check if an action is selected
+            if (actionSelect.value === '') {
+                alert('Vui lòng chọn một hành động.');
+                e.preventDefault();
+            } else if (!element.classList.contains('disabled')) {
+                containerForm.submit();
+            } else {
+                e.preventDefault();
+            }
+        }
+    });
+
+        function renderCheckedAllBtn() {
+            var checkedCount = Array.from(CourseElements).filter(function (element) {
+                return element.checked;
+            }).length;
+
+            checkBoxSubmit.forEach(function (element) {
+                if (checkedCount > 0) {
+                    element.classList.remove('disabled')
+                } else {
+                    element.classList.add('disabled')
+                }
+            })
+        }
     })
 </script>

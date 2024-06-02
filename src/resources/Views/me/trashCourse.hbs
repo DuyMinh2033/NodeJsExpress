@@ -2,6 +2,14 @@
     <div>
         <a href="/me/store/courses">Quay Lai</a>
         <h3>Khóa Học Đã Xóa</h3>
+
+        <div class="mt-4 ml-4" >
+            <div class="form-check">
+                <input class="form-check-input position-static" type="checkbox" id="checkbox-all" value="option1"
+                    aria-label="...">
+                <label for="checkbox-all">Chọn Tất Cả</label>
+            </div>
+        </div>
     </div>
     <table class="table">
         <thead>
@@ -9,7 +17,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Tên khóa học</th>
                 <th scope="col">Trình độ</th>
-                <th scope="col">Thời gian đào tạo</th>
+                <th scope="col">Thời gian xóa</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -19,10 +27,11 @@
                 <th scope="row">{{sum @index 1 }}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.description}}</td>
-                <td>{{this.createdAt}}</td>
+                <td>{{this.deletedAt}}</td>
                 <td>
-                    <a href="" class="btn btn-dark btnRetore" data-id="{{this._id}}">Khôi phục</a>
-                    <a href="" class="btn btn-dark" data-id="{{this._id}}" data-toggle="modal" data-target="#DeleteCourse">Xóa Vĩnh Viễn</a>
+                    <a href="" class="btn btn-danger btnRetore" data-id="{{this._id}}">Khôi phục</a>
+                    <a href="" class="btn btn-dark" data-id="{{this._id}}" data-toggle="modal"
+                        data-target="#DeleteCourse">Xóa Vĩnh Viễn</a>
                 </td>
             </tr>
             {{else}}
@@ -69,25 +78,27 @@
         var restoreForm = document.forms['restore-course-form'];
         var btnCourse = document.getElementById('CourseID');
         var btnRestore = document.querySelectorAll('.btnRetore');
+        var checkboxAll= document.getElementById('checkbox-all')
 
         $('#DeleteCourse').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             ID = button.data('id');
             console.log(ID);
         });
-        
+
         btnCourse.onclick = function () {
             deleteForm.action = '/courses/' + ID + '/forever?_method=DELETE';
             deleteForm.submit();
         };
 
-        btnRestore.forEach(function(button) {
-            button.onclick = function(e) {
+        btnRestore.forEach(function (button) {
+            button.onclick = function (e) {
                 e.preventDefault();
                 var restoreId = button.getAttribute('data-id');
                 restoreForm.action = '/courses/' + restoreId + '/restore?_method=PATCH';
                 restoreForm.submit();
             };
         });
+        
     });
 </script>
