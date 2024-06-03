@@ -13,20 +13,30 @@
                 <label for="checkbox-all">Chọn Tất Cả</label>
             </div>
         </div>
-        <select class="form-control form-control-sm ml-4 mt-1 checkbox-select-app-options" style="width:200px;" name="action">
-            <option value="" required >-- Hành Động --</option>
+        <select class="form-control form-control-sm ml-4 mt-1 checkbox-select-app-options" style="width:200px;"
+            name="action">
+            <option value="" required>-- Hành Động --</option>
             <option value="delete">Xóa</option>
         </select>
-        <button class="btn btn-primary btn-sm ml-4 mt-1 checkbox-all-submit disabled" >Thực Hiện</button>
+        <button class="btn btn-primary btn-sm ml-4 mt-1 checkbox-all-submit" disabled>Thực Hiện</button>
     </div>
     <table class="table">
         <thead>
             <tr>
                 <th colspan="1"></th>
                 <th scope="col">checkbox</th>
-                <th scope="col">Tên khóa học</th>
-                <th scope="col">Trình độ</th>
-                <th scope="col">Chon</th>
+                <th scope="col">
+                Tên khóa học                   
+                {{{sortable 'name' _sort}}}
+                </th>
+                <th scope="col">
+                Trình độ
+                {{{sortable 'description' _sort}}}
+                </th>
+                <th scope="col">
+                Chon
+                {{{sortable 'videoId' _sort}}}
+                </th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -89,7 +99,7 @@
 <form method="post" name="delelte-course-form" style="display: none"></form>
 
 <script>
-    
+
     //khi dialog duoc show
     document.addEventListener('DOMContentLoaded', function () {
         var ID
@@ -108,18 +118,19 @@
         }
 
         //checkbox-all click 
-        
+
         var checkboxAll = document.getElementById('checkbox-all')
         var CourseElements = document.querySelectorAll('.checkbox-course')
         var checkBoxSubmit = document.querySelectorAll('.checkbox-all-submit')
-        var containerForm  = document.forms['container-submit']
+        var containerForm = document.forms['container-submit']
         var actionSelect = document.querySelector('.checkbox-select-app-options');
 
         window.addEventListener('pageshow', function () {
-        // để option về mặc định
-        actionSelect.selectedIndex = 0
-        // để các checkbox về mặc định
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);});
+            // để option về mặc định
+            actionSelect.selectedIndex = 0
+            // để các checkbox về mặc định
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+        });
 
         checkboxAll.onchange = () => {
             var isChecked = checkboxAll.checked;
@@ -137,20 +148,20 @@
                 renderCheckedAllBtn()
             };
         });
-        
+
         checkBoxSubmit.forEach(function (element) {
-        element.onclick = function (e) {
-            // Check if an action is selected
-            if (actionSelect.value === '') {
-                alert('Vui lòng chọn một hành động.');
-                e.preventDefault();
-            } else if (!element.classList.contains('disabled')) {
-                containerForm.submit();
-            } else {
-                e.preventDefault();
+            element.onclick = function (e) {
+                // Check if an action is selected
+                if (actionSelect.value === '') {
+                    alert('Vui lòng chọn một hành động.');
+                    e.preventDefault();
+                } else if (!element.classList.contains('disabled')) {
+                    containerForm.submit();
+                } else {
+                    e.preventDefault();
+                }
             }
-        }
-    });
+        });
 
         function renderCheckedAllBtn() {
             var checkedCount = Array.from(CourseElements).filter(function (element) {
@@ -159,11 +170,12 @@
 
             checkBoxSubmit.forEach(function (element) {
                 if (checkedCount > 0) {
-                    element.classList.remove('disabled')
+                    element.removeAttribute('disabled')
                 } else {
-                    element.classList.add('disabled')
+                    element.setAttribute('disabled', true)
                 }
             })
+
         }
     })
 </script>

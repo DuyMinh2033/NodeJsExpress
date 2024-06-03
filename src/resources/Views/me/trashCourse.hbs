@@ -1,20 +1,26 @@
-<div class="mt-4">
+<form class="mt-4 ml-8" method="post" action="/courses/handleRestore-submit-action">
     <div>
-        <a href="/me/store/courses">Quay Lai</a>
-        <h3>Khóa Học Đã Xóa</h3>
+        <a href="/me/store/courses" class="ml-4">Quay Lai</a>
+        <h3 class="ml-4" >Khóa Học Đã Xóa</h3>
 
-        <div class="mt-4 ml-4" >
+        <div class="mt-4 ml-4">
             <div class="form-check">
                 <input class="form-check-input position-static" type="checkbox" id="checkbox-all" value="option1"
                     aria-label="...">
                 <label for="checkbox-all">Chọn Tất Cả</label>
             </div>
+            <select class="form-control form-control-sm checkbox-select-app-options" style="width:200px;"
+                name="action">
+                <option value="" required>-- Hành Động --</option>
+                <option value="restoreAll">Khôi Phục Toàn Bộ</option>
+            </select>
+            <button class="btn btn-primary btn-sm mt-1  checkbox-all-submit" disabled>Thực Hiện</button>
         </div>
     </div>
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">#</th>
+                <th colspan="2">CheckBox</th>
                 <th scope="col">Tên khóa học</th>
                 <th scope="col">Trình độ</th>
                 <th scope="col">Thời gian xóa</th>
@@ -24,6 +30,13 @@
         <tbody>
             {{#each courses}}
             <tr>
+                <td>
+                    <div class="ml-4">
+                        <div class="form-check">
+                            <input class="form-check-input position-static checkbox-course" type="checkbox"
+                                id={{this._id}} name="courseIds[]" value="{{this._id}}" aria-label="...">
+                        </div>
+                </td>
                 <th scope="row">{{sum @index 1 }}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.description}}</td>
@@ -44,7 +57,7 @@
             {{/each}}
         </tbody>
     </table>
-</div>
+</form>
 
 {{!-- Form Xóa --}}
 <div class="modal" tabindex="-1" role="dialog" id="DeleteCourse">
@@ -78,7 +91,7 @@
         var restoreForm = document.forms['restore-course-form'];
         var btnCourse = document.getElementById('CourseID');
         var btnRestore = document.querySelectorAll('.btnRetore');
-        var checkboxAll= document.getElementById('checkbox-all')
+        var checkboxAll = document.getElementById('checkbox-all')
 
         $('#DeleteCourse').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
@@ -99,6 +112,54 @@
                 restoreForm.submit();
             };
         });
+
+
+        // su li checkbox
+        var checkboxAll = document.getElementById('checkbox-all');
+        var CourseElements = document.querySelectorAll('input[name="courseIds[]"]')
+        var BtnSubmit = document.querySelector('.checkbox-all-submit')
+        var actionSelect = document.querySelector('.checkbox-select-app-options')
+        function forEach (element, callback){
+          return  element.forEach(callback)
+        }  
+        checkboxAll.onchange = function (){
+            forEach (CourseElements , function(element){
+            var isCheckedAll = checkboxAll.checked
+            element.checked = isCheckedAll
+            renderCheckedAllBtn()
+        })
+        }
+        
+        forEach(CourseElements , function(element){
+            element.onchange = function (){
+                var isChildrenChecked = Array.from(CourseElements).every(function(course){
+                    return course.checked
+                })
+                checkboxAll.checked = isChildrenChecked
+                renderCheckedAllBtn()
+            }
+        })
+        function renderCheckedAllBtn(){
+            var checkedCount = Array.from(CourseElements).filter(function(element){
+                return element.checked
+            }).length
+            if(checkedCount > 0){
+                BtnSubmit.removeAttribute('disabled')
+            } else {
+                BtnSubmit.setAttribute('disabled', true)
+            }
+        }
+        BtnSubmit.onclick = function(e){
+            if(actionSelect.value === ''){
+                e.preventDefault()
+                alert('hãy nhập vào select')
+            } else if(!BtnSubmit.classList.contains('disabled')){
+                BtnSubmit.submit()
+            } else{
+                e.preventDefault()
+            }
+        }
+    
         
     });
 </script>
