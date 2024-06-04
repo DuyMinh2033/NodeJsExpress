@@ -15,8 +15,6 @@ class CourseController {
     //post du lieu store
     store(req, res, next) {
         const formdata = req.body;
-        console.log("Received form data:", formdata); // Ghi log dữ liệu gửi từ form
-
         const course = new Course(formdata);
         course.save()
             .then(() => res.redirect('/'))

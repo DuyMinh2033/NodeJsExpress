@@ -24,7 +24,10 @@
         <thead>
             <tr>
                 <th colspan="1"></th>
-                <th scope="col">checkbox</th>
+                <th scope="col m-center">
+                ID
+                {{{sortable '_id' _sort}}}
+                </th>
                 <th scope="col">
                 Tên khóa học                   
                 {{{sortable 'name' _sort}}}
@@ -50,7 +53,7 @@
                                 id={{this._id}} name="courseIds[]" value="{{this._id}}" aria-label="...">
                         </div>
                 </td>
-                <th scope="row">{{sum @index 1 }}</th>
+                <th scope="row">{{this._id}}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.description}}</td>
                 <td>{{this.createdAt}}</td>

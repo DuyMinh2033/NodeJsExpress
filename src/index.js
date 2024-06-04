@@ -32,20 +32,18 @@ app.engine('hbs', engine({
         sum: (a, b) => a + b,
         sortable: (field, sort) => {
             const sortType = field === sort.column ? sort.type : 'default'
-            const icons ={
-                default:'fa-solid fa-elevator',
-                desc:'fa-solid fa-arrow-down-wide-short',
-                asc:'fa-solid fa-arrow-up-wide-short',
+            const icons = {
+                default: 'fa-solid fa-elevator',
+                asc: 'fa-solid fa-arrow-up-wide-short',
+                desc: 'fa-solid fa-arrow-down-wide-short'
             }
-            const types ={
-                default:'desc',
-                asc:'desc',
-                desc:'asc'
+            const types = {
+                default: 'desc',
+                asc: 'desc',
+                desc: 'asc'
             }
-
             const icon = icons[sortType]
             const type = types[sortType]
-
             return `<a href="?_sort&column=${field}&type=${type}" style="margin-left: 10px;">
                         <i class="${icon}"></i>
                     </a>`
